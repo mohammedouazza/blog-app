@@ -67,7 +67,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('categories.edit', ["category" => $category]);
     }
 
     /**
@@ -79,7 +79,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $last_categ_title = $category->title;
+        $request->validate([
+            "title" => "required"
+        ]);
+        
+        $category->title = $request->title;
+        if($category->save()) {
+            return redirect("categories")->with("success", "Category '". $last_categ_title ."' updated successfully to '" . $category->title."'");
+        }
     }
 
     /**
@@ -90,6 +98,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        if($category->delete()) {
+            return redirect("categories")->with("success", "Category deleted successfully");
+        }
     }
 }
